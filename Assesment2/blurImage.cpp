@@ -9,48 +9,48 @@
 
 using namespace std;
 
-// Funcion de imagen bluePixelr
+// Funcion de imagen pixelBluePixelr
 void blur(const cv::Mat& input, cv::Mat& output) {
-    cout << "Input image step: " << input.step << " rows: " << input.rows << " cols: " << input.cols << endl;
+    cout << "Input image step: " << input.step << " rows: " << input.rows << " colums: " << input.cols << endl;
 
     // Matriz
     //Valoresn en x
-    for(int i = 0; i < input.rows; i++) {
-      //Valores en Y
-        for(int j = 0; j < input.cols; j++) {
-            int bluePixel = 0;
-            int greenPixel = 0;
-            int redPixel = 0;
-            int average = 0;
+   for(int i = 0; i < input.rows; i++) {
+     //Valores en Y
+       for(int j = 0; j < input.cols; j++) {
+           int pixelBlue = 0;
+           int pixelGreen = 0;
+           int pixelRed = 0;
+           int tm = 0;
 
-            // Pixeles vecinos
-            for(int filX=-2; filX < 3; filX++) {
-                for(int filY=-2; filY < 3; filY++) {
-                    int idxn = i+filX;
-                    int idyn = j+filY;
+           // Pixeles Vecions
+           for(int filX=-2; filX<3; filX++) {
+               for(int filY=-2; filY<3; filY++) {
+                   int idX = i+filX;
+                   int idY = j+filY;
 
-                    // Bordes
-                    if((idxn > 0 && idyn < input.cols) && (idxn > 0 && idyn < input.rows)) {
-                        bluePixel += input.at<cv::Vec3b>(idxn, idyn)[0];
-                        greenPixel += input.at<cv::Vec3b>(idxn, idyn)[1];
-                        redPixel += input.at<cv::Vec3b>(idxn, idyn)[2];
-                        average++;
-                    }
-                }
-            }
-            // Promedio
-            output.at<cv::Vec3b>(i, j)[0] = bluePixel/average;
-            output.at<cv::Vec3b>(i, j)[1] = greenPixel/average;
-            output.at<cv::Vec3b>(i, j)[2] = redPixel/average;
-        }
-    }
+                   //Bordes
+                   if((idY>0 && idY < input.cols) && (idX>0 && idX < input.rows)) {
+                       pixelBlue += input.at<cv::Vec3b>(idX, idY)[0];
+                       pixelGreen += input.at<cv::Vec3b>(idX, idY)[1];
+                       pixelRed += input.at<cv::Vec3b>(idX, idY)[2];
+                       tm++;
+                   }
+               }
+           }
+           // Promedio
+           output.at<cv::Vec3b>(i, j)[0] = floor(pixelBlue/tm);
+           output.at<cv::Vec3b>(i, j)[1] = floor(pixelGreen/tm);
+           output.at<cv::Vec3b>(i, j)[2] = floor(pixelRed/tm);
+       }
+   }
 }
 
 int main(int argc, char *argv[]) {
-    // Read input image
+    // Lectura de la Imagen
     string imagePath;
     if (argc < 2)
-      imagePath = "image.jpg";
+      imagePath = "spiderman.jpg";
     else
       imagePath = argv[1];
 
@@ -65,7 +65,7 @@ int main(int argc, char *argv[]) {
     blur(input, output);
     auto end_cpu =  std::chrono::high_resolution_clock::now();
 
-    // Measure total time
+    //Tiempo Promedio
     std::chrono::duration<float, std::milli> duration_ms = end_cpu - start_cpu;
     printf("blur elapsed %f ms\n", duration_ms.count());
 

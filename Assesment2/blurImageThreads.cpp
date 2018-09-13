@@ -3,13 +3,14 @@
 #include <cstdio>
 #include <cmath>
 #include <chrono>
+#include <omp.h>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
 using namespace std;
 
-// Funcion de imagen bluePixelr
+// Funcion de imagen pixelBluer
 void blur(const cv::Mat& input, cv::Mat& output) {
     cout << "Input image step: " << input.step << " rows: " << input.rows << " cols: " << input.cols << endl;
 
@@ -21,43 +22,43 @@ void blur(const cv::Mat& input, cv::Mat& output) {
     #pragma omp parallel for private (i, y, filX, filY) shared(input, output)
 
     // Matriz
-    //Valoresn en x
+    //Valores en x
     for(i = 0; i < input.rows; i++) {
       //Valores en Y
         for(j = 0; j < input.cols; j++) {
-            int bluePixel = 0;
-            int greenPixel = 0;
-            int redPixel = 0;
-            int average = 0;
+            int pixelBlue = 0;
+            int pixelGreen = 0;
+            int pixelRed = 0;
+            int tm = 0;
 
             // Pixeles vecinos
             for(filX=-2; filX<3; filX++) {
                 for(filY=-2; filY<3; filY++) {
-                    int idxn = i+filX;
-                    int idyn = j+filY;
+                    int idX = i+filX;
+                    int idY = j+filY;
 
                     // Bordes
-                    if((idxn>0 && idyn < input.cols) && (idxn>0 && idyn < input.rows)) {
-                        bluePixel += input.at<cv::Vec3b>(idxn, idyn)[0];
-                        greenPixel += input.at<cv::Vec3b>(idxn, idyn)[1];
-                        redPixel += input.at<cv::Vec3b>(idxn, idyn)[2];
-                        average++;
+                    if((idY>0 && idY < input.cols) && (idX>0 && idX < input.rows)) {
+                        pixelBlue += input.at<cv::Vec3b>(idX, idY)[0];
+                        pixelGreen += input.at<cv::Vec3b>(idX, idY)[1];
+                        pixelRed += input.at<cv::Vec3b>(idX, idY)[2];
+                        tm++;
                     }
                 }
             }
             // Promedio
-            output.at<cv::Vec3b>(i, j)[0] = bluePixel/average;
-            output.at<cv::Vec3b>(i, j)[1] = greenPixel/average;
-            output.at<cv::Vec3b>(i, j)[2] = redPixel/average;
+            output.at<cv::Vec3b>(i, j)[0] = pixelBlue/tm;
+            output.at<cv::Vec3b>(i, j)[1] = pixelGreen/tm;
+            output.at<cv::Vec3b>(i, j)[2] = pixelRed/tm;
         }
     }
 }
 
 int main(int argc, char *argv[]) {
-    // Read input image
+    // Lectura de la imagen
     string imagePath;
     if (argc < 2)
-      imagePath = "spiderman.jpg"
+      imagePath = "spiderman.jpg";
     else
       imagePath = argv[1];
 
@@ -72,7 +73,7 @@ int main(int argc, char *argv[]) {
     blur(input, output);
     auto end_cpu =  std::chrono::high_resolution_clock::now();
 
-    // Measure total time
+    // Timepo en compilar
     std::chrono::duration<float, std::milli> duration_ms = end_cpu - start_cpu;
     printf("blur elapsed %f ms\n", duration_ms.count());
 

@@ -1,10 +1,10 @@
 CC = g++
 CFLAGS = -std=c++11
 INCLUDES =
-LDFLAGS = -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_imgcodecs
-SOURCES = blurImage.cpp
-OUTF = blurImage.exe
-OBJS = blurImage.o
+LDFLAGS = -lopencv_core -lopencv__core -lopencv_highgui -lopencv_imgproc -lopencv_imgcodecs
+SOURCES = blurImageThreads.cpp
+OUTF = blurImageThreads.exe
+OBJS = blurImageThreads.o
 
 $(OUTF): $(OBJS)
 	$(CC) $(CFLAGS) -o $(OUTF) $< $(LDFLAGS)
