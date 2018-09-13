@@ -24,16 +24,16 @@ void blur(const cv::Mat& input, cv::Mat& output) {
             int average = 0;
 
             // Pixeles vecinos
-            for(int filX=-2; filX<3; filX++) {
-                for(int filY=-2; filY<3; filY++) {
-                    int idyn = i+filX;
+            for(int filX=-2; filX < 3; filX++) {
+                for(int filY=-2; filY < 3; filY++) {
+                    int idxn = i+filX;
                     int idyn = j+filY;
 
                     // Bordes
-                    if((idyn>0 && idyn < input.cols) && (idyn>0 && idyn < input.rows)) {
-                        bluePixel += input.at<cv::Vec3b>(idyn, idyn)[0];
-                        greenPixel += input.at<cv::Vec3b>(idyn, idyn)[1];
-                        redPixel += input.at<cv::Vec3b>(idyn, idyn)[2];
+                    if((idxn > 0 && idyn < input.cols) && (idxn > 0 && idyn < input.rows)) {
+                        bluePixel += input.at<cv::Vec3b>(idxn, idyn)[0];
+                        greenPixel += input.at<cv::Vec3b>(idxn, idyn)[1];
+                        redPixel += input.at<cv::Vec3b>(idxn, idyn)[2];
                         average++;
                     }
                 }
@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
     // Read input image
     string imagePath;
     if (argc < 2)
-      imagePath = "spiderman.jpg"
+      imagePath = "image.jpg";
     else
       imagePath = argv[1];
 
@@ -66,8 +66,8 @@ int main(int argc, char *argv[]) {
     auto end_cpu =  std::chrono::high_resolution_clock::now();
 
     // Measure total time
-    chrono::duration<float, std::milli> duration_ms = end_cpu - start_cpu;
-    printf("Blur elapsed %f ms\n", duration_ms.average());
+    std::chrono::duration<float, std::milli> duration_ms = end_cpu - start_cpu;
+    printf("blur elapsed %f ms\n", duration_ms.count());
 
     //Allow the windows to resize
     namedWindow("Input", cv::WINDOW_NORMAL);

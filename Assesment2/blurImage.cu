@@ -14,7 +14,7 @@ __global__ void blur_kernel(unsigned char* input, unsigned char* output, int wid
 
     // Matriz
     //Valoresn en X y Y
-    if((xIndex<width) && (yIndex<height)) {
+    if((xIndex < width) && (yIndex < height)) {
         //Location of pixel in input and output
         const int tid = yIndex * step + (3 * xIndex);
         int bluePixel = 0;
