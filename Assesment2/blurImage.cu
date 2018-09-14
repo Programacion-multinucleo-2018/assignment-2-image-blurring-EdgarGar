@@ -6,7 +6,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-//Funcion de imagen bluePixelPixelr
+//Funcion de imagen pixelBluePixelr
 __global__ void blur_kernel(unsigned char* input, unsigned char* output, int width, int height, int step) {
     //2D Index of current thread
     const int xIndex = blockIdx.x * blockDim.x + threadIdx.x;
@@ -17,10 +17,10 @@ __global__ void blur_kernel(unsigned char* input, unsigned char* output, int wid
     if((xIndex < width) && (yIndex < height)) {
         //Location of pixel in input and output
         const int tid = yIndex * step + (3 * xIndex);
-        int bluePixel = 0;
-        int greenixel = 0;
-        int redPixel = 0;
-        int Average = 0;
+        int pixelBlue = 0;
+        int pixelGreen = 0;
+        int pixelRed = 0;
+        int tm = 0;
 
         // Pixeles vecinos
         for(int filX=-2; filX<3; filX++) {
@@ -29,17 +29,17 @@ __global__ void blur_kernel(unsigned char* input, unsigned char* output, int wid
 
                 // Bordes
                 if((xIndex+filX)%width>1 && (yIndex+filY)%height>1) {
-                    bluePixel += input[tid];
-                    greenixel += input[tid+1];
-                    redPixel += input[tid+2];
-                    Average++;
+                    pixelBlue += input[tid];
+                    pixelGreen += input[tid+1];
+                    pixelRed += input[tid+2];
+                    tm++;
                 }
             }
         }
         // Promedio
-        output[tid] = static_cast<unsigned char>(bluePixel/Average);
-        output[tid+1] = static_cast<unsigned char>(greenixel/Average);
-        output[tid+2] = static_cast<unsigned char>(redPixel/Average);
+        output[tid] = static_cast<unsigned char>(pixelBlue/tm);
+        output[tid+1] = static_cast<unsigned char>(pixelGreen/tm);
+        output[tid+2] = static_cast<unsigned char>(pixelRed/tm);
     }
 }
 
@@ -126,10 +126,10 @@ void blur(const cv::Mat& input, cv::Mat& output)
 }
 
 int main(int argc, char *argv[]) {
-    // Read input image
+    // Lectura de la imagen
     string imagePath;
     if (argc < 2)
-      imagePath = "spiderman.jpg"
+      imagePath = "spiderman.jpg";
     else
       imagePath = argv[1];
 

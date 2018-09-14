@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -std=c++11
 INCLUDES =
-LDFLAGS = -lopencv_core -lopencv__core -lopencv_highgui -lopencv_imgproc -lopencv_imgcodecs
+LDFLAGS = -lopencv_core -lopencv__core -lopencv_highgui -lopencv_imgproc -lopencv_imgcodecs 
 SOURCES = blurImageThreads.cpp
 OUTF = blurImageThreads.exe
 OBJS = blurImageThreads.o

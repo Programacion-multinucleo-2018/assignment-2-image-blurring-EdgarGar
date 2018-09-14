@@ -10,7 +10,7 @@
 
 using namespace std;
 
-// Funcion de imagen pixelBluer
+// Funcion Bluer
 void blur(const cv::Mat& input, cv::Mat& output) {
     cout << "Input image step: " << input.step << " rows: " << input.rows << " cols: " << input.cols << endl;
 
