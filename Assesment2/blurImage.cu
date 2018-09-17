@@ -2,9 +2,12 @@
 #include <cstdio>
 #include <cmath>
 #include <chrono>
+#include "common.h"
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
+
+using namespace std;
 
 //Funcion de imagen pixelBluePixelr
 __global__ void blur_kernel(unsigned char* input, unsigned char* output, int width, int height, int step) {
@@ -70,49 +73,6 @@ void blur(const cv::Mat& input, cv::Mat& output)
 
 	// Launch the color conversion kernel
 	blur_kernel <<<grid, block >>>(d_input, d_output, input.cols, input.rows, static_cast<int>(input.step));
-
-	// Synchronize to check for any kernel launch errors
-	SAFE_CALL(cudaDeviceSynchronize(), "Kernel Launch Failed");
-
-	// Copy back data from destination device meory to OpenCV output image
-	SAFE_CALL(cudaMemcpy(output.ptr(), d_output, grayBytes, cudaMemcpyDeviceToHost), "CUDA Memcpy Host To Device Failed");
-
-	// Free the device memory
-	SAFE_CALL(cudaFree(d_input), "CUDA Free Failed");
-	SAFE_CALL(cudaFree(d_output), "CUDA Free Failed");
-}
-
-
-void blur(const cv::Mat& input, cv::Mat& output)
-{
-
-	cout << "Input image step: " << input.step << " rows: " << input.rows << " cols: " << input.cols << endl;
-
-	size_t colorBytes = input.step * input.rows;
-	size_t grayBytes = output.step * output.rows;
-
-	unsigned char *d_input, *d_output;
-
-	// Allocate device memory
-	SAFE_CALL(cudaMalloc(&d_input, colorBytes), "CUDA Malloc Failed");
-	SAFE_CALL(cudaMalloc(&d_output, grayBytes), "CUDA Malloc Failed");
-
-	// Copy data from OpenCV input image to device memory
-	SAFE_CALL(cudaMemcpy(d_input, input.ptr(), colorBytes, cudaMemcpyHostToDevice), "CUDA Memcpy Host To Device Failed");
-	SAFE_CALL(cudaMemcpy(d_output, output.ptr(), colorBytes, cudaMemcpyHostToDevice), "CUDA Memcpy Host To Device Failed");
-
-	// Specify a reasonable block size
-	const dim3 block(1024, 1024);
-
-	// Calculate grid size to cover the whole image
-	const dim3 grid((int)ceil((float)input.cols / block.x), (int)ceil((float)input.rows/ block.y));
-	printf("grid.x %d, grid.y %d, block.x %d block.y %d \n", grid.x, grid.y, block.x, block.y);
-
-
-	// Launch the color conversion kernel
-  auto start_cpu =  std::chrono::high_resolution_clock::now();
-	blur_kernel <<<grid, block >>>(d_input, d_output, input.cols, input.rows, static_cast<int>(input.step));
-  auto end_cpu =  std::chrono::high_resolution_clock::now();
 
 	// Synchronize to check for any kernel launch errors
 	SAFE_CALL(cudaDeviceSynchronize(), "Kernel Launch Failed");
