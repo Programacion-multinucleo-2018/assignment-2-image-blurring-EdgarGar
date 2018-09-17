@@ -19,8 +19,7 @@ void blur(const cv::Mat& input, cv::Mat& output) {
     int filX;
     int filY;
 
-    #pragma omp parallel for private (i, y, filX, filY) shared(input, output)
-
+    #pragma omp parallel for private (i, j, filX, filY) shared(input, output)
     // Matriz
     //Valores en x
     for(i = 0; i < input.rows; i++) {
@@ -58,7 +57,7 @@ int main(int argc, char *argv[]) {
     // Lectura de la imagen
     string imagePath;
     if (argc < 2)
-      imagePath = "spiderman.jpg";
+      imagePath = "imagenMedia.jpg";
     else
       imagePath = argv[1];
 

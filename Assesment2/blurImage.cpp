@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
     // Lectura de la Imagen
     string imagePath;
     if (argc < 2)
-      imagePath = "spiderman.jpg";
+      imagePath = "imagenMedia.jpg";
     else
       imagePath = argv[1];
 
