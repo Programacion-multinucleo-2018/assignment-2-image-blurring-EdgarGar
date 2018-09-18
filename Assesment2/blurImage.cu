@@ -100,8 +100,13 @@ int main(int argc, char *argv[]) {
     cv::Mat output(input.rows, input.cols, CV_8UC3);
 
     //Llamada de la funcion
+    auto start_cpu =  std::chrono::high_resolution_clock::now();
     blur(input, output);
+    auto end_cpu =  std::chrono::high_resolution_clock::now();
 
+    // Timepo en compilar
+    std::chrono::duration<float, std::milli> duration_ms = end_cpu - start_cpu;
+    printf("blur elapsed %f ms\n", duration_ms.count());
 
     //Allow the windows to resize
     namedWindow("Input", cv::WINDOW_NORMAL);
